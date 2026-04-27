@@ -111,6 +111,7 @@ import {
 	type ImportMonitorDataRecordItem,
 	type ManualMineItem,
 } from "../api";
+import { chooseFileFromModule } from "../../../uni_modules/sr-file-choose";
 
 interface LocalFile {
 	name: string;
@@ -271,61 +272,35 @@ async function loadHistoryList() {
 }
 
 function chooseExcelFile() {
-	/**
-	 * 真机兼容性说明：
-	 * - 你当前报错的根因是运行环境不存在 uni.chooseFile（函数未实现）；
-	 * - 因此这里改为“能力探测 + 多方案兜底”，避免再次触发 TypeError 导致页面事件中断。
-	 */
-	const uniAny = uni as any;
-	const chooseFileApi = uniAny?.chooseFile;
-	const chooseMessageFileApi = uniAny?.chooseMessageFile;
+	chooseFileFromModule({
+		success: (res: any) => {
+			const path = res.path;
+			let name = res.name;
+			
+			if (!name) {
+				const lastIndex = path.lastIndexOf("/");
+				if (lastIndex !== -1) {
+					name = path.substring(lastIndex + 1);
+				} else {
+					name = Math.random().toString(36).substr(2) + Date.now() + ".xlsx";
+				}
+			}
 
-	const onPickSuccess = (res: any) => {
-		const file = res?.tempFiles?.[0];
-		if (!file) return;
-		const rawPath = String(file.path || file.tempFilePath || "");
-		const fallbackName = rawPath.split("/").pop() || rawPath.split("\\").pop() || "未命名文件";
-		const name = String(file.name || fallbackName);
-		const lowerName = name.toLowerCase();
-		if (!lowerName.endsWith(".xlsx") && !lowerName.endsWith(".xls")) {
-			uni.showToast({ title: "仅支持Excel文件", icon: "none" });
-			return;
+			const lowerName = name.toLowerCase();
+			if (!lowerName.endsWith(".xlsx") && !lowerName.endsWith(".xls")) {
+				uni.showToast({ title: "仅支持Excel文件", icon: "none" });
+				return;
+			}
+			
+			selectedFile.value = {
+				name,
+				size: Number(res.size || 0),
+				path,
+			};
+		},
+		fail: (err: any) => {
+			uni.showToast({ title: "文件选择失败", icon: "none" });
 		}
-		selectedFile.value = {
-			name,
-			size: Number(file.size || 0),
-			path: rawPath,
-		};
-	};
-
-	if (typeof chooseFileApi === "function") {
-		chooseFileApi({
-			count: 1,
-			type: "all",
-			success: onPickSuccess,
-			fail: () => {
-				uni.showToast({ title: "文件选择失败", icon: "none" });
-			},
-		});
-		return;
-	}
-
-	if (typeof chooseMessageFileApi === "function") {
-		chooseMessageFileApi({
-			count: 1,
-			type: "file",
-			success: onPickSuccess,
-			fail: () => {
-				uni.showToast({ title: "文件选择失败", icon: "none" });
-			},
-		});
-		return;
-	}
-
-	uni.showModal({
-		title: "当前环境不支持",
-		content: "当前真机基座不支持文件选择接口，请升级运行基座后重试。",
-		showCancel: false,
 	});
 }
 

@@ -1,0 +1,76 @@
+import { UTSAndroid } from "io.dcloud.uts";
+import Intent from "android.content.Intent";
+import Activity from "android.app.Activity";
+import Uri from "android.net.Uri";
+import DocumentsContract from "android.provider.DocumentsContract";
+import { getFilePathFromUri } from "./uri2path.kt";
+
+export type ChooseFileResult = {
+    size: number;
+    path: string;
+    name: string;
+}
+
+export type ChooseFileOptions = {
+    complete?: (res: ChooseFileResult | any) => void;
+    success?: (res: ChooseFileResult) => void;
+    fail?: (err: any) => void;
+}
+
+export function chooseFileFromModule(options: ChooseFileOptions) {
+    const activity = UTSAndroid.getUniActivity()!;
+    
+    const intent = new Intent(Intent.ACTION_GET_CONTENT);
+    intent.setType("*/*");
+    intent.addCategory(Intent.CATEGORY_OPENABLE);
+    
+    UTSAndroid.onAppActivityResult((requestCode: number, resultCode: number, data: Intent | null) => {
+        if (requestCode === 1001) {
+            if (resultCode === Activity.RESULT_OK && data != null) {
+                const uri = data.getData();
+                if (uri != null) {
+                    let fileName = "unknown";
+                    let fileSize: number = 0;
+                    const cursor = activity.getContentResolver().query(uri, null, null, null, null);
+                    if (cursor != null && cursor.moveToFirst()) {
+                        const nameIndex = cursor.getColumnIndex(DocumentsContract.Document.COLUMN_DISPLAY_NAME);
+                        if (nameIndex != -1) {
+                            fileName = cursor.getString(nameIndex);
+                        }
+                        const sizeIndex = cursor.getColumnIndex(DocumentsContract.Document.COLUMN_SIZE);
+                        if (sizeIndex != -1) {
+                            fileSize = cursor.getLong(sizeIndex).toInt();
+                        }
+                        cursor.close();
+                    }
+                    
+                    const tempFile: string | null = getFilePathFromUri(activity, uri, fileName);
+                    
+                    if (tempFile != null) {
+                        const res: ChooseFileResult = {
+                            size: fileSize,
+                            path: tempFile,
+                            name: fileName
+                        };
+                        if (options.success != null) options.success(res);
+                        if (options.complete != null) options.complete(res);
+                    } else {
+                        const err = { errMsg: "get file path failed" };
+                        if (options.fail != null) options.fail(err);
+                        if (options.complete != null) options.complete(err);
+                    }
+                } else {
+                    const err = { errMsg: "uri is null" };
+                    if (options.fail != null) options.fail(err);
+                    if (options.complete != null) options.complete(err);
+                }
+            } else {
+                const err = { errMsg: "user canceled" };
+                if (options.fail != null) options.fail(err);
+                if (options.complete != null) options.complete(err);
+            }
+        }
+    });
+    
+    activity.startActivityForResult(intent, 1001);
+}

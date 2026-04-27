@@ -1,0 +1,13 @@
+export type ChooseFileResult = {
+    size: number;
+    path: string;
+    name: string;
+}
+
+export type ChooseFileOptions = {
+    complete?: (res: ChooseFileResult | any) => void;
+    success?: (res: ChooseFileResult) => void;
+    fail?: (err: any) => void;
+}
+
+export declare function chooseFileFromModule(options: ChooseFileOptions): void;
