@@ -418,8 +418,8 @@ function goManualImport() {
 	padding: 0 20rpx 20rpx;
 	background: #ffffff;
 	view {
-		line-height: 120rpx;
-		border-radius: 20rpx;
+		line-height: 88rpx;
+		border-radius: 44rpx;
 		width: 49%;
 		color: #fff;
 		text-align: center;
@@ -434,7 +434,12 @@ function goManualImport() {
 }
 
 .detail-page {
-	height: 100vh;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
 	display: flex;
 	flex-direction: column;
 	overflow: hidden;
@@ -586,7 +591,7 @@ function goManualImport() {
 	border-radius: 12rpx;
 	background: #ffffff;
 	border: 1rpx solid #edf0f6;
-	height: 420rpx;
+	height: 320rpx;
 }
 
 .trend-chart {

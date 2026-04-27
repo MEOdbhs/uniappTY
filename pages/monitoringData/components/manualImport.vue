@@ -384,6 +384,12 @@ async function submitImport() {
 			fileName: selectedFile.value.name,
 		});
 		uni.showToast({ title: "导入成功", icon: "success" });
+		selectedMineSiteCode.value = "";
+		selectedMineName.value = "";
+		selectedDeviceId.value = "";
+		selectedDeviceCode.value = "";
+		selectedDeviceName.value = "";
+		selectedFile.value = null;
 		loadHistoryList();
 	} catch (err: any) {
 		uni.showToast({ title: err?.message || "导入失败", icon: "none" });

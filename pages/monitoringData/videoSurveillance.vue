@@ -549,7 +549,7 @@ async function playFromGrid(item: MonitoringVideoViewItem) {
 
 <style scoped lang="scss">
 .video-page {
-	margin: 16rpx 20rpx 0;
+	margin: -8rpx 20rpx 0;
 	padding: 20rpx;
 	background: linear-gradient(180deg, #f6f8fc 0%, #ffffff 100%);
 	border-radius: 21rpx;
