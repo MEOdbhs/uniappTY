@@ -240,17 +240,6 @@ export function getImportMonitorDataRecord(params: Record<string, any>) {
 }
 
 /**
- * 导入接口参数：
- * - 按已确认协议仅上传必要字段，避免传递冗余参数触发后端校验差异。
- */
-export interface ImportManualMonitorDataPayload {
-	deviceCode: string;
-	siteCode: string;
-	filePath: string;
-	fileName?: string;
-}
-
-/**
  * 解析“可能被 AjaxJson 包裹”或“直接数组”结构为列表：
  * - 这层抽象的核心价值是把返回结构差异集中在 API 层消化；
  * - 页面拿到统一数组后，能保持模板与交互逻辑稳定。
@@ -289,71 +278,6 @@ export function normalizeManualMineList(response: any): ManualMineItem[] {
 			siteCode,
 			mineName: String(mineName ?? ""),
 		};
-	});
-}
-
-/**
- * 人工数据导入上传：
- * - 由于接口包含文件，必须使用 uni.uploadFile 走 multipart/form-data；
- * - 统一在 API 层处理 token、语言、返回解析，保证页面逻辑简洁且可维护。
- */
-export async function importManualMonitorData(payload: ImportManualMonitorDataPayload) {
-	const { user } = useStore();
-	const baseUrl = config.baseUrl.endsWith("/") ? config.baseUrl.slice(0, -1) : config.baseUrl;
-	const url = `${baseUrl}/companyApp/DeviceSafeCheck/importMonitorData`;
-	const headers: Record<string, string> = {
-		language: getLocale(),
-	};
-	if (user.token) {
-		headers.Authorization = `Bearer ${user.token}`;
-	}
-
-	return new Promise<any>((resolve, reject) => {
-		uni.uploadFile({
-			url,
-			filePath: payload.filePath,
-			name: "file",
-			header: headers,
-			formData: {
-				deviceCode: payload.deviceCode,
-				siteCode: payload.siteCode,
-			},
-			success: (res) => {
-				let result: any = res.data;
-				if (typeof result === "string") {
-					try {
-						result = JSON.parse(result);
-					} catch {
-						reject({ message: "导入接口返回非 JSON 数据" });
-						return;
-					}
-				}
-
-				if (res.statusCode !== 200) {
-					reject({
-						message: result?.message || `导入请求失败(${res.statusCode})`,
-						code: res.statusCode,
-					});
-					return;
-				}
-
-				const bizStatus = result?.status;
-				if (bizStatus === 200 || bizStatus === undefined || bizStatus === null) {
-					resolve(result);
-					return;
-				}
-
-				reject({
-					message: result?.message || "导入失败",
-					code: bizStatus,
-				});
-			},
-			fail: (err) => {
-				reject({
-					message: err?.errMsg || "导入上传失败",
-				});
-			},
-		});
 	});
 }
 

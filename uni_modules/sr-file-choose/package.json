@@ -1,0 +1,28 @@
+{
+	"id": "sr-file-choose",
+	"displayName": "文件选择App端通用插件",
+	"version": "1.0.1",
+	"description": "一个插件实现安卓、苹果和鸿蒙的文件选择功能",
+	"uni_modules": {
+		"dependencies": [],
+		"encrypt": [],
+		"platforms": {
+			"cloud": {
+				"tcb": "y",
+				"aliyun": "y"
+			},
+			"client": {
+				"App": {
+					"app-vue": "y",
+					"app-nvue": "y"
+				},
+				"H5": "y",
+				"WeChat": "y",
+				"Alipay": "y",
+				"Baidu": "y",
+				"Toutiao": "y",
+				"QQ": "y"
+			}
+		}
+	}
+}

@@ -1,5 +1,5 @@
 <template>
-	<cl-page :statusBar="false">
+	<cl-page>
 		<view class="detail-page">
 			<view class="detail-header">
 				<view class="header-left" @tap="goBack">

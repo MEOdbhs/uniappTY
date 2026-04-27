@@ -100,11 +100,12 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
+import { chooseFileFromModule } from "../../../uni_modules/sr-file-choose";
+import { importManualMonitorDataByUpload } from "../../../utils/importFile";
 import {
 	getDeviceArchiveList,
 	getImportMonitorDataRecord,
 	getManualMineList,
-	importManualMonitorData,
 	normalizeManualMineList,
 	parseListResult,
 	type DeviceArchiveItem,
@@ -270,63 +271,89 @@ async function loadHistoryList() {
 	}
 }
 
-function chooseExcelFile() {
-	/**
-	 * 真机兼容性说明：
-	 * - 你当前报错的根因是运行环境不存在 uni.chooseFile（函数未实现）；
-	 * - 因此这里改为“能力探测 + 多方案兜底”，避免再次触发 TypeError 导致页面事件中断。
-	 */
-	const uniAny = uni as any;
-	const chooseFileApi = uniAny?.chooseFile;
-	const chooseMessageFileApi = uniAny?.chooseMessageFile;
+/**
+ * 兜底提取文件名：
+ * - 插件在少数机型上可能只返回 path；
+ * - 这里统一兜底，保证后续扩展名校验稳定可靠。
+ */
+function resolveFileName(rawName: string, rawPath: string) {
+	const name = String(rawName || "").trim();
+	if (name) return name;
+	const path = String(rawPath || "").trim();
+	if (!path) return `excel_${Date.now()}.xlsx`;
+	const slashIndex = Math.max(path.lastIndexOf("/"), path.lastIndexOf("\\"));
+	if (slashIndex >= 0 && slashIndex < path.length - 1) {
+		return path.slice(slashIndex + 1);
+	}
+	return `excel_${Date.now()}.xlsx`;
+}
 
-	const onPickSuccess = (res: any) => {
-		const file = res?.tempFiles?.[0];
-		if (!file) return;
-		const rawPath = String(file.path || file.tempFilePath || "");
-		const fallbackName = rawPath.split("/").pop() || rawPath.split("\\").pop() || "未命名文件";
-		const name = String(file.name || fallbackName);
-		const lowerName = name.toLowerCase();
-		if (!lowerName.endsWith(".xlsx") && !lowerName.endsWith(".xls")) {
-			uni.showToast({ title: "仅支持Excel文件", icon: "none" });
+/**
+ * 只允许 Excel：
+ * - 接口文档明确 `file` 为 Excel 文件；
+ * - 在选择阶段阻断非 Excel，可减少无效请求与后端校验压力。
+ */
+function isExcelFile(fileName: string) {
+	const lowerName = String(fileName || "")
+		.trim()
+		.toLowerCase();
+	return lowerName.endsWith(".xls") || lowerName.endsWith(".xlsx");
+}
+
+/**
+ * Promise 化插件文件选择：
+ * - 插件文档以 complete 回调为主；
+ * - 页面层转 Promise 后，异常/取消可与 async/await 流程统一处理。
+ */
+function chooseFileFromPluginAsync(): Promise<{ name: string; size: number; path: string }> {
+	return new Promise((resolve, reject) => {
+		chooseFileFromModule({
+			complete: (res: any) => {
+				const path = String(res?.path || "").trim();
+				if (!path) {
+					reject(new Error("未选择文件"));
+					return;
+				}
+				const name = resolveFileName(String(res?.name || ""), path);
+				const size = Number(res?.size || 0);
+				resolve({
+					name,
+					size: Number.isFinite(size) && size >= 0 ? size : 0,
+					path,
+				});
+			},
+		});
+	});
+}
+
+async function chooseExcelFile() {
+	// 该插件是 App 端插件，避免在非 App 环境触发不可用能力。
+	// #ifndef APP-PLUS
+	uni.showToast({ title: "当前环境不支持文件选择插件", icon: "none" });
+	return;
+	// #endif
+
+	// #ifdef APP-PLUS
+	try {
+		const file = await chooseFileFromPluginAsync();
+		if (!isExcelFile(file.name)) {
+			selectedFile.value = null;
+			uni.showToast({ title: "仅支持上传 .xls/.xlsx 文件", icon: "none" });
 			return;
 		}
-		selectedFile.value = {
-			name,
-			size: Number(file.size || 0),
-			path: rawPath,
-		};
-	};
-
-	if (typeof chooseFileApi === "function") {
-		chooseFileApi({
-			count: 1,
-			type: "all",
-			success: onPickSuccess,
-			fail: () => {
-				uni.showToast({ title: "文件选择失败", icon: "none" });
-			},
-		});
-		return;
+		selectedFile.value = file;
+	} catch (err: any) {
+		const msg = String(err?.message || "").trim();
+		/**
+		 * 用户取消选择属于预期行为：
+		 * - 不弹错误，避免干扰；
+		 * - 仅在真正异常时提示。
+		 */
+		if (msg && msg !== "未选择文件") {
+			uni.showToast({ title: msg || "文件选择失败", icon: "none" });
+		}
 	}
-
-	if (typeof chooseMessageFileApi === "function") {
-		chooseMessageFileApi({
-			count: 1,
-			type: "file",
-			success: onPickSuccess,
-			fail: () => {
-				uni.showToast({ title: "文件选择失败", icon: "none" });
-			},
-		});
-		return;
-	}
-
-	uni.showModal({
-		title: "当前环境不支持",
-		content: "当前真机基座不支持文件选择接口，请升级运行基座后重试。",
-		showCancel: false,
-	});
+	// #endif
 }
 
 async function submitImport() {
@@ -350,7 +377,7 @@ async function submitImport() {
 
 	submitting.value = true;
 	try {
-		await importManualMonitorData({
+		await importManualMonitorDataByUpload({
 			deviceCode: selectedDeviceCode.value,
 			siteCode: selectedMineSiteCode.value,
 			filePath: selectedFile.value.path,
