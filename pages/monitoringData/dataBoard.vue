@@ -1,5 +1,5 @@
 <template>
-	<cl-page>
+	<cl-page :statusBar="false">
 		<view class="monitoring-page">
 			<!-- 设备预警信息 -->
 			<view class="module-card">
@@ -825,9 +825,11 @@ function buildDownloadUrl(path: string) {
 
 <style scoped lang="scss">
 .monitoring-page {
-	margin: 12rpx 20rpx 0;
-	padding: 0 0 20rpx;
-	background: transparent;
+	margin: -8rpx 20rpx 0;
+	padding: 12rpx 20rpx 20rpx;
+	background: linear-gradient(180deg, #f6f8fc 0%, #ffffff 100%);
+	border-radius: 21rpx;
+	border: 2rpx solid #ffffff;
 	min-height: calc(100vh - 340rpx);
 }
 

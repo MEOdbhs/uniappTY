@@ -686,10 +686,6 @@ export function getSafetyThresholdByDeviceType(deviceType: string | number = 1) 
 	});
 }
 
-/**
- * 保存或更新设备阈值配置
- * POST /companyApp/DeviceSafeCheck/alarmThresholdSave
- */
 export function saveAlarmThreshold(data: any) {
 	return service.request({
 		url: "/companyApp/DeviceSafeCheck/alarmThresholdSave",

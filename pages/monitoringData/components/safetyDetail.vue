@@ -173,7 +173,6 @@ import {
 } from "../api";
 
 const { router } = useCool();
-const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0;
 
 /**
  * 详情页首屏信息：
@@ -329,9 +328,6 @@ const statusDotColor = computed(() => statusStyle.value.dotColor);
 const statusTagColor = computed(() => statusStyle.value.tagColor);
 const statusTagBgColor = computed(() => statusStyle.value.tagBgColor);
 
-// ====================
-// 阈值配置表单相关
-// ====================
 const thresholdPopupVisible = ref(false);
 const thresholdForm = ref({
 	id: "",
@@ -341,7 +337,7 @@ const thresholdForm = ref({
 	yellowAlarm: "",
 	blueAlarm: "",
 	unit: "",
-	condition: 1, // 1 大于 2 小于
+	condition: 1,
 	noticeWays: [] as string[],
 	remark: "",
 });
@@ -384,7 +380,6 @@ function openThresholdPopup() {
 		thresholdForm.value.noticeWays = raw.noticeWay ? String(raw.noticeWay).split(",").filter(Boolean) : [];
 		thresholdForm.value.remark = raw.remark || "";
 	} else {
-		// 默认值
 		thresholdForm.value.id = "";
 		thresholdForm.value.deviceType = 1;
 		thresholdForm.value.redAlarm = "";
@@ -418,7 +413,6 @@ async function submitThreshold() {
 		uni.hideLoading();
 		uni.showToast({ title: "保存成功", icon: "success" });
 		closeThresholdPopup();
-		// 保存成功后重新加载阈值数据以刷新页面显示
 		loadThresholdData();
 	} catch (err: any) {
 		uni.hideLoading();
@@ -833,15 +827,15 @@ function goDeviceArchive() {
 	color: #ffffff;
 }
 
-/* ====================
-   弹出层表单样式
-   ==================== */
 .popup-wrap {
 	display: flex;
 	flex-direction: column;
 	background: #ffffff;
 	border-radius: 20rpx 20rpx 0 0;
 	height: 70vh;
+	width: 100%;
+	box-sizing: border-box;
+	overflow: hidden;
 }
 
 .popup-header {
@@ -862,6 +856,9 @@ function goDeviceArchive() {
 	flex: 1;
 	min-height: 0;
 	padding: 20rpx 30rpx;
+	width: 100%;
+	box-sizing: border-box;
+	overflow-x: hidden;
 }
 
 .form-row {
@@ -869,6 +866,9 @@ function goDeviceArchive() {
 	align-items: center;
 	min-height: 100rpx;
 	border-bottom: 1rpx solid #eef0f6;
+	gap: 16rpx;
+	padding: 0 4rpx;
+	box-sizing: border-box;
 }
 
 .form-row--textarea {
@@ -886,6 +886,7 @@ function goDeviceArchive() {
 	width: 160rpx;
 	font-size: 28rpx;
 	color: #303133;
+	flex-shrink: 0;
 }
 
 .form-input {
@@ -894,10 +895,14 @@ function goDeviceArchive() {
 	font-size: 28rpx;
 	color: #303133;
 	text-align: right;
+	min-width: 0;
+	padding-right: 6rpx;
+	box-sizing: border-box;
 }
 
 .form-picker {
 	flex: 1;
+	min-width: 0;
 }
 
 .picker-inner {
@@ -911,6 +916,10 @@ function goDeviceArchive() {
 .picker-text {
 	font-size: 28rpx;
 	color: #303133;
+	max-width: 360rpx;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .checkbox-group {
@@ -919,6 +928,8 @@ function goDeviceArchive() {
 	align-items: center;
 	justify-content: flex-end;
 	gap: 30rpx;
+	min-width: 0;
+	flex-wrap: wrap;
 }
 
 .checkbox-item {
