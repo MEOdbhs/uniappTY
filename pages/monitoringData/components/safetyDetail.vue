@@ -90,10 +90,71 @@
 			</view>
 
 			<view class="footer">
-				<view class="config">阈值配置</view>
+				<view class="config" @tap="openThresholdPopup">阈值配置</view>
 				<view class="device" @tap="goDeviceArchive">设备档案</view>
 			</view>
 		</view>
+
+		<cl-popup v-model="thresholdPopupVisible" direction="bottom" :padding="0" :z-index="1200" border-radius="20rpx 20rpx 0 0">
+			<view class="popup-wrap">
+				<view class="popup-header">
+					<text class="popup-title">阈值配置</text>
+					<uni-icons type="closeempty" size="24" color="#909399" @tap="closeThresholdPopup" />
+				</view>
+				<scroll-view scroll-y class="popup-content">
+					<view class="form-row">
+						<text class="form-label">红色预警</text>
+						<input class="form-input" type="digit" v-model="thresholdForm.redAlarm" placeholder="请输入" />
+					</view>
+					<view class="form-row">
+						<text class="form-label">橙色预警</text>
+						<input class="form-input" type="digit" v-model="thresholdForm.orangeAlarm" placeholder="请输入" />
+					</view>
+					<view class="form-row">
+						<text class="form-label">黄色预警</text>
+						<input class="form-input" type="digit" v-model="thresholdForm.yellowAlarm" placeholder="请输入" />
+					</view>
+					<view class="form-row">
+						<text class="form-label">蓝色预警</text>
+						<input class="form-input" type="digit" v-model="thresholdForm.blueAlarm" placeholder="请输入" />
+					</view>
+					<view class="form-row">
+						<text class="form-label">单位</text>
+						<input class="form-input" type="text" v-model="thresholdForm.unit" placeholder="m / kN / mm ..." />
+					</view>
+					<view class="form-row">
+						<text class="form-label">判定方向</text>
+						<picker :range="directionOptions" range-key="label" @change="onDirectionChange" class="form-picker">
+							<view class="picker-inner">
+								<text class="picker-text">{{ currentDirectionLabel }}</text>
+								<uni-icons type="bottom" size="16" color="#C0C4CC" />
+							</view>
+						</picker>
+					</view>
+					<view class="form-row">
+						<text class="form-label">通知方式</text>
+						<view class="checkbox-group">
+							<view class="checkbox-item" @tap="toggleNoticeWay('1')">
+								<text class="checkbox-icon" :class="{ 'is-checked': thresholdForm.noticeWays.includes('1') }">✓</text>
+								<text>短信通知</text>
+							</view>
+							<view class="checkbox-item" @tap="toggleNoticeWay('2')">
+								<text class="checkbox-icon" :class="{ 'is-checked': thresholdForm.noticeWays.includes('2') }">✓</text>
+								<text>邮件通知</text>
+							</view>
+						</view>
+					</view>
+					<view class="form-row form-row--textarea">
+						<text class="form-label">备注</text>
+						<textarea class="form-textarea" v-model="thresholdForm.remark" placeholder="请输入备注" />
+					</view>
+				</scroll-view>
+				<view class="popup-footer">
+					<view class="btn-cancel" @tap="closeThresholdPopup">取消</view>
+					<view class="btn-confirm" @tap="submitThreshold">保存</view>
+				</view>
+			</view>
+		</cl-popup>
 	</cl-page>
 </template>
 
@@ -106,6 +167,7 @@ import {
 	getSafetyTrendByDeviceCode,
 	normalizeSafetyThreshold,
 	normalizeSafetyTrendDataByOptions,
+	saveAlarmThreshold,
 	type SafetyThresholdConfig,
 	type SafetyTrendPoint,
 } from "../api";
@@ -266,6 +328,103 @@ const statusStyle = computed(() => {
 const statusDotColor = computed(() => statusStyle.value.dotColor);
 const statusTagColor = computed(() => statusStyle.value.tagColor);
 const statusTagBgColor = computed(() => statusStyle.value.tagBgColor);
+
+// ====================
+// 阈值配置表单相关
+// ====================
+const thresholdPopupVisible = ref(false);
+const thresholdForm = ref({
+	id: "",
+	deviceType: 1,
+	redAlarm: "",
+	orangeAlarm: "",
+	yellowAlarm: "",
+	blueAlarm: "",
+	unit: "",
+	condition: 1, // 1 大于 2 小于
+	noticeWays: [] as string[],
+	remark: "",
+});
+
+const directionOptions = [
+	{ label: "大于阈值预警", value: 1 },
+	{ label: "小于阈值预警", value: 2 },
+];
+
+const currentDirectionLabel = computed(() => {
+	const found = directionOptions.find((o) => o.value === thresholdForm.value.condition);
+	return found ? found.label : "请选择判定方向";
+});
+
+function onDirectionChange(e: any) {
+	const idx = e.detail.value;
+	thresholdForm.value.condition = directionOptions[idx].value;
+}
+
+function toggleNoticeWay(val: string) {
+	const idx = thresholdForm.value.noticeWays.indexOf(val);
+	if (idx > -1) {
+		thresholdForm.value.noticeWays.splice(idx, 1);
+	} else {
+		thresholdForm.value.noticeWays.push(val);
+	}
+}
+
+function openThresholdPopup() {
+	if (thresholdConfig.value && (thresholdConfig.value as any).raw) {
+		const raw = (thresholdConfig.value as any).raw;
+		thresholdForm.value.id = raw.id || "";
+		thresholdForm.value.deviceType = raw.deviceType || 1;
+		thresholdForm.value.redAlarm = raw.redAlarm !== undefined && raw.redAlarm !== null ? String(raw.redAlarm) : "";
+		thresholdForm.value.orangeAlarm = raw.orangeAlarm !== undefined && raw.orangeAlarm !== null ? String(raw.orangeAlarm) : "";
+		thresholdForm.value.yellowAlarm = raw.yellowAlarm !== undefined && raw.yellowAlarm !== null ? String(raw.yellowAlarm) : "";
+		thresholdForm.value.blueAlarm = raw.blueAlarm !== undefined && raw.blueAlarm !== null ? String(raw.blueAlarm) : "";
+		thresholdForm.value.unit = raw.unit || "";
+		thresholdForm.value.condition = raw.condition || 1;
+		thresholdForm.value.noticeWays = raw.noticeWay ? String(raw.noticeWay).split(",").filter(Boolean) : [];
+		thresholdForm.value.remark = raw.remark || "";
+	} else {
+		// 默认值
+		thresholdForm.value.id = "";
+		thresholdForm.value.deviceType = 1;
+		thresholdForm.value.redAlarm = "";
+		thresholdForm.value.orangeAlarm = "";
+		thresholdForm.value.yellowAlarm = "";
+		thresholdForm.value.blueAlarm = "";
+		thresholdForm.value.unit = "";
+		thresholdForm.value.condition = 1;
+		thresholdForm.value.noticeWays = [];
+		thresholdForm.value.remark = "";
+	}
+	thresholdPopupVisible.value = true;
+}
+
+function closeThresholdPopup() {
+	thresholdPopupVisible.value = false;
+}
+
+async function submitThreshold() {
+	try {
+		uni.showLoading({ title: "保存中...", mask: true });
+		const payload = {
+			...thresholdForm.value,
+			noticeWay: thresholdForm.value.noticeWays.join(","),
+			redAlarm: thresholdForm.value.redAlarm === "" ? null : Number(thresholdForm.value.redAlarm),
+			orangeAlarm: thresholdForm.value.orangeAlarm === "" ? null : Number(thresholdForm.value.orangeAlarm),
+			yellowAlarm: thresholdForm.value.yellowAlarm === "" ? null : Number(thresholdForm.value.yellowAlarm),
+			blueAlarm: thresholdForm.value.blueAlarm === "" ? null : Number(thresholdForm.value.blueAlarm),
+		};
+		await saveAlarmThreshold(payload);
+		uni.hideLoading();
+		uni.showToast({ title: "保存成功", icon: "success" });
+		closeThresholdPopup();
+		// 保存成功后重新加载阈值数据以刷新页面显示
+		loadThresholdData();
+	} catch (err: any) {
+		uni.hideLoading();
+		uni.showToast({ title: err.message || "保存失败", icon: "none" });
+	}
+}
 
 onLoad((options) => {
 	const decode = (value: any) => {
@@ -671,6 +830,160 @@ function goDeviceArchive() {
 .threshold-label {
 	font-size: 24rpx;
 	line-height: 1.2;
+	color: #ffffff;
+}
+
+/* ====================
+   弹出层表单样式
+   ==================== */
+.popup-wrap {
+	display: flex;
+	flex-direction: column;
+	background: #ffffff;
+	border-radius: 20rpx 20rpx 0 0;
+	height: 70vh;
+}
+
+.popup-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 30rpx;
+	border-bottom: 1rpx solid #eef0f6;
+}
+
+.popup-title {
+	font-size: 34rpx;
+	font-weight: 600;
+	color: #0f1f3d;
+}
+
+.popup-content {
+	flex: 1;
+	min-height: 0;
+	padding: 20rpx 30rpx;
+}
+
+.form-row {
+	display: flex;
+	align-items: center;
+	min-height: 100rpx;
+	border-bottom: 1rpx solid #eef0f6;
+}
+
+.form-row--textarea {
+	flex-direction: column;
+	align-items: stretch;
+	border-bottom: none;
+	padding-top: 30rpx;
+}
+
+.form-row--textarea .form-label {
+	margin-bottom: 20rpx;
+}
+
+.form-label {
+	width: 160rpx;
+	font-size: 28rpx;
+	color: #303133;
+}
+
+.form-input {
+	flex: 1;
+	height: 100%;
+	font-size: 28rpx;
+	color: #303133;
+	text-align: right;
+}
+
+.form-picker {
+	flex: 1;
+}
+
+.picker-inner {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	height: 100rpx;
+	gap: 10rpx;
+}
+
+.picker-text {
+	font-size: 28rpx;
+	color: #303133;
+}
+
+.checkbox-group {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 30rpx;
+}
+
+.checkbox-item {
+	display: flex;
+	align-items: center;
+	gap: 12rpx;
+	font-size: 28rpx;
+	color: #303133;
+}
+
+.checkbox-icon {
+	width: 32rpx;
+	height: 32rpx;
+	border-radius: 4rpx;
+	border: 2rpx solid #c0c4cc;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 24rpx;
+	color: transparent;
+	transition: all 0.2s;
+}
+
+.checkbox-icon.is-checked {
+	background: #3d7eff;
+	border-color: #3d7eff;
+	color: #ffffff;
+}
+
+.form-textarea {
+	width: 100%;
+	height: 200rpx;
+	background: #f5f7fa;
+	border-radius: 12rpx;
+	padding: 20rpx;
+	font-size: 28rpx;
+	color: #303133;
+	box-sizing: border-box;
+}
+
+.popup-footer {
+	display: flex;
+	align-items: center;
+	padding: 20rpx 30rpx calc(20rpx + env(safe-area-inset-bottom));
+	gap: 20rpx;
+	border-top: 1rpx solid #eef0f6;
+}
+
+.btn-cancel,
+.btn-confirm {
+	flex: 1;
+	height: 88rpx;
+	line-height: 88rpx;
+	text-align: center;
+	border-radius: 44rpx;
+	font-size: 30rpx;
+}
+
+.btn-cancel {
+	background: #f5f7fa;
+	color: #606266;
+}
+
+.btn-confirm {
+	background: #3d7eff;
 	color: #ffffff;
 }
 </style>

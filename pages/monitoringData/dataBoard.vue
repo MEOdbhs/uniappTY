@@ -825,9 +825,9 @@ function buildDownloadUrl(path: string) {
 
 <style scoped lang="scss">
 .monitoring-page {
-	margin: -8rpx 20rpx 0;
-	padding: 20rpx;
-	background: #f6f8fc;
+	margin: 12rpx 20rpx 0;
+	padding: 0 0 20rpx;
+	background: transparent;
 	min-height: calc(100vh - 340rpx);
 }
 
