@@ -1,14 +1,7 @@
 <template>
 	<cl-page>
 		<view class="archive-page">
-			<view class="page-header" :style="{ paddingTop: `${statusBarHeight}px` }">
-				<view class="header-bar">
-					<view class="header-left" @tap="goBack">
-						<uni-icons type="left" size="22" color="#909399" />
-					</view>
-					<text class="header-title">设备档案</text>
-					<view class="header-right" />
-				</view>
+			<view class="page-header">
 				<view class="search-row">
 					<uni-icons type="search" size="16" color="#9ca3af" />
 					<input
@@ -157,9 +150,8 @@ onShow(() => {
 }
 
 .page-header {
-	background: #ffffff;
-	padding: 0 16rpx 14rpx;
-	border-bottom: 1rpx solid #eef0f6;
+	background: transparent;
+	padding: 14rpx 16rpx;
 }
 
 .header-bar {

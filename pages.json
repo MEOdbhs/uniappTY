@@ -53,13 +53,13 @@
         {
             "path": "pages/monitoringData/components/safetyDetail",
             "style": {
-                "navigationStyle": "custom"
+                "navigationBarTitleText": "监测详情"
             }
         },
         {
             "path": "pages/monitoringData/components/deviceArchiveList",
             "style": {
-                "navigationStyle": "custom"
+                "navigationBarTitleText": "设备档案"
             }
         },
         {

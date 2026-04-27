@@ -1,10 +1,7 @@
 <template>
 	<cl-page>
 		<view class="detail-page">
-			<view class="detail-header" :style="{ paddingTop: `${statusBarHeight}px` }">
-				<view class="header-left" @tap="goBack">
-					<uni-icons type="left" size="22" color="#909399" />
-				</view>
+			<view class="detail-header">
 				<text class="header-title">监测详情</text>
 				<view class="header-right-btn" @tap="goManualImport">+人工数据导入</view>
 			</view>
@@ -450,27 +447,29 @@ function goDeviceArchive() {
 }
 
 .detail-page {
-	height: 100vh;
+	margin: 16rpx 20rpx 0;
+	padding: 20rpx;
+	background: linear-gradient(180deg, #f6f8fc 0%, #ffffff 100%);
+	border-radius: 21rpx;
+	border: 2rpx solid #ffffff;
+	min-height: calc(100vh - 220rpx);
 	display: flex;
 	flex-direction: column;
 	overflow: hidden;
-	background: #ffffff;
 }
 
 .page-body {
 	flex: 1;
 	min-height: 0;
 	overflow-y: auto;
-	padding-bottom: 24rpx;
+	padding-bottom: 40rpx;
 }
 
 .detail-header {
-	padding: 0 16rpx;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	border-bottom: 1rpx solid #eef0f6;
-	min-height: 92rpx;
+	padding-bottom: 16rpx;
 }
 
 .header-left {
@@ -482,9 +481,9 @@ function goDeviceArchive() {
 }
 
 .header-title {
-	font-size: 34rpx;
-	font-weight: 600;
-	color: #0f1f3d;
+	font-size: 30rpx;
+	font-weight: 700;
+	color: #303133;
 }
 
 .header-right-btn {

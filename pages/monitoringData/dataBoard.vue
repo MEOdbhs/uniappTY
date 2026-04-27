@@ -825,9 +825,10 @@ function buildDownloadUrl(path: string) {
 
 <style scoped lang="scss">
 .monitoring-page {
-	padding: 16rpx 24rpx 36rpx;
+	margin: -8rpx 20rpx 0;
+	padding: 20rpx;
 	background: #f6f8fc;
-	min-height: 100vh;
+	min-height: calc(100vh - 340rpx);
 }
 
 .module-card {
