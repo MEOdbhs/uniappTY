@@ -69,8 +69,7 @@ object NativeCode {
 
         // 创建文件选择 Intent
         val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
-            type = "application/vnd.ms-excel" // .xls
-            putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) // .xls, .xlsx
+            type = "*/*" // 还原回 */* 以避免部分机型选择器返回不正确类型或假流
             addCategory(Intent.CATEGORY_OPENABLE)
         }
 

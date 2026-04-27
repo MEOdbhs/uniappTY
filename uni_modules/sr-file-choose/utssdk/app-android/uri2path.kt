@@ -13,19 +13,24 @@ fun getFilePathFromUri(
     val safeFileName = System.currentTimeMillis().toString() + "_" + fileName.replace(Regex("[^a-zA-Z0-9.\\-_\\u4e00-\\u9fa5]"), "_")
     val targetFile = File(context.cacheDir, safeFileName)
     return try {
-        context.contentResolver.openInputStream(uri)?.use { input ->
-            FileOutputStream(targetFile).use { output ->
-                val buffer = ByteArray(4 * 1024) // 4KB buffer
-                var read: Int
-                while (true) {
-                    read = input.read(buffer)
-                    if (read == -1) break
-                    output.write(buffer, 0, read)
-                }
-                output.flush()
-            }
-        } ?: return null
-        "file://" + targetFile.absolutePath
+        val inputStream = context.contentResolver.openInputStream(uri) ?: return null
+        val outputStream = FileOutputStream(targetFile)
+        
+        val buffer = ByteArray(4 * 1024)
+        var read: Int
+        while (true) {
+            read = inputStream.read(buffer)
+            if (read == -1) break
+            outputStream.write(buffer, 0, read)
+        }
+        
+        outputStream.flush()
+        outputStream.close()
+        inputStream.close()
+        
+        // Android 平台上如果以 file:// 开头，有些网络库(或uni.uploadFile)内部解析时可能出现异常
+        // 我们直接返回绝对路径供 uni.uploadFile 使用
+        targetFile.absolutePath
     } catch (e: Exception) {
         e.printStackTrace()
         null
