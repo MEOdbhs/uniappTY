@@ -1,0 +1,551 @@
+{
+    "easycom": {
+        "autoscan": true,
+        "custom": {
+            "^u-(.*)": "@/uni_modules/uni-$1/components/uni-$1/uni-$1.vue"
+        }
+    },
+    "pages": [
+        {
+            "path": "pages/user/login",
+            "style": {
+                "navigationStyle": "custom",
+                "navigationBarTextStyle": "white",
+                "navigationBarBackgroundColor": "#0B1688"
+            }
+        },
+        {
+            "path": "pages/update/index",
+            "style": {
+                "navigationStyle": "custom"
+            }
+        },
+        {
+            "path": "pages/home/index",
+            "style": {
+                "navigationStyle": "custom",
+                "enablePullDownRefresh": true,
+                "navigationBarTextStyle": "black",
+                "navigationBarBackgroundColor": "#0B1688"
+            }
+        },
+        {
+            "path": "pages/monitoringData/index",
+            "style": {
+                "navigationStyle": "custom",
+                "enablePullDownRefresh": true,
+                "navigationBarTextStyle": "white",
+                "navigationBarBackgroundColor": "#0B1688"
+            }
+        },
+        {
+            "path": "pages/monitoringData/components/manualImport",
+            "style": {
+                "navigationBarTitleText": "人工数据导入"
+            }
+        },
+        {
+            "path": "pages/monitoringData/components/manualRecords",
+            "style": {
+                "navigationBarTitleText": "人工数据详情"
+            }
+        },
+        {
+            "path": "pages/monitoringData/components/safetyDetail",
+            "style": {
+                "navigationStyle": "custom"
+            }
+        },
+        {
+            "path": "pages/TecLibrary/index",
+            "style": {
+                "navigationStyle": "custom",
+                "navigationBarTextStyle": "white",
+                "navigationBarBackgroundColor": "#0B1688"
+            }
+        },
+        {
+            "path": "pages/index/my",
+            "style": {
+                "navigationStyle": "custom",
+                "navigationBarTextStyle": "white",
+                "navigationBarBackgroundColor": "#0B1688"
+            }
+        },
+        {
+            "path": "pages/constructionRecord/index",
+            "style": {
+                "navigationStyle": "custom",
+                "navigationBarTextStyle": "white",
+                "navigationBarBackgroundColor": "#0B1688"
+            }
+        },
+        {
+            "path": "pages/constructionRecord/detail",
+            "style": {
+                "navigationStyle": "custom",
+                "navigationBarTextStyle": "white",
+                "navigationBarBackgroundColor": "#0B1688"
+            }
+        },
+        {
+            "path": "pages/TecLibrary/addExperience",
+            "style": {
+                "navigationStyle": "custom",
+                "navigationBarTitleText": "新增经验"
+            }
+        },
+        {
+            "path": "pages/safetyCheck/index",
+            "style": {
+                "navigationStyle": "custom",
+                "navigationBarTitleText": "安全检查"
+            }
+        },
+        {
+            "path": "pages/safetyCheck/addData",
+            "style": {
+                "navigationStyle": "custom",
+                "navigationBarTitleText": "新增安全检查"
+            }
+        },
+        {
+            "path": "pages/safetyCheck/detail",
+            "style": {
+                "navigationStyle": "custom",
+                "navigationBarTitleText": "检查详情"
+            }
+        },
+        {
+            "path": "pages/message/index",
+            "style": {
+                "navigationStyle": "custom",
+                "navigationBarTextStyle": "white",
+                "navigationBarTitleText": "消息通知"
+            }
+        },
+        {
+            "path": "pages/message/detail",
+            "style": {
+                "navigationStyle": "custom",
+                "navigationBarTextStyle": "white",
+                "navigationBarTitleText": "消息详情"
+            }
+        },
+        {
+            "path": "pages/home/projectDistribution/index",
+            "style": {
+                "navigationStyle": "custom",
+                "navigationBarTitleText": "项目分布"
+            }
+        },
+        {
+            "path": "pages/home/OperationProjectList",
+            "style": {
+                "navigationStyle": "custom",
+                "navigationBarTitleText": "运维项目列表"
+            }
+        },
+        {
+            "path": "pages/home/OperationUserList",
+            "style": {
+                "navigationStyle": "custom",
+                "navigationBarTitleText": "运维人员列表"
+            }
+        }
+    ],
+    "subPackages": [
+        {
+            "root": "pages/user",
+            "pages": [
+                {
+                    "path": "doc",
+                    "style": {
+                        "navigationBarTitleText": ""
+                    }
+                },
+                {
+                    "path": "set",
+                    "style": {
+                        "navigationBarTitleText": "%page.设置%"
+                    }
+                },
+                {
+                    "path": "edit",
+                    "style": {
+                        "navigationBarTitleText": "%page.编辑%"
+                    }
+                },
+                {
+                    "path": "captcha",
+                    "style": {
+                        "navigationStyle": "custom"
+                    }
+                },
+                {
+                    "path": "about",
+                    "style": {
+                        "navigationBarTitleText": "%page.关于我们%"
+                    }
+                },
+                {
+                    "path": "register",
+                    "style": {
+                        "navigationStyle": "custom"
+                    }
+                },
+                {
+                    "path": "restPwd",
+                    "style": {
+                        "navigationStyle": "custom",
+                        "navigationBarTextStyle": "white",
+                        "navigationBarBackgroundColor": "#0B1688"
+                    }
+                }
+            ]
+        },
+        {
+            "root": "pages/demo",
+            "pages": [
+                {
+                    "path": "basic/button",
+                    "style": {
+                        "navigationBarTitleText": "Button 按钮"
+                    }
+                },
+                {
+                    "path": "basic/text",
+                    "style": {
+                        "navigationBarTitleText": "Text 文本"
+                    }
+                },
+                {
+                    "path": "basic/image",
+                    "style": {
+                        "navigationBarTitleText": "Image 图片"
+                    }
+                },
+                {
+                    "path": "basic/icon",
+                    "style": {
+                        "navigationBarTitleText": "Icon 图标"
+                    }
+                },
+                {
+                    "path": "basic/tag",
+                    "style": {
+                        "navigationBarTitleText": "Tag 标签"
+                    }
+                },
+                {
+                    "path": "basic/toast",
+                    "style": {
+                        "navigationBarTitleText": "Toast 提示"
+                    }
+                },
+                {
+                    "path": "basic/loading",
+                    "style": {
+                        "navigationBarTitleText": "Loading 加载"
+                    }
+                },
+                {
+                    "path": "view/flex",
+                    "style": {
+                        "navigationBarTitleText": "Flex 弹性"
+                    }
+                },
+                {
+                    "path": "view/grid",
+                    "style": {
+                        "navigationBarTitleText": "Grid 宫格"
+                    }
+                },
+                {
+                    "path": "view/divider",
+                    "style": {
+                        "navigationBarTitleText": "Divider 分割符"
+                    }
+                },
+                {
+                    "path": "view/avatar",
+                    "style": {
+                        "navigationBarTitleText": "Avatar 头像"
+                    }
+                },
+                {
+                    "path": "view/badge",
+                    "style": {
+                        "navigationBarTitleText": "Badge 角标"
+                    }
+                },
+                {
+                    "path": "view/loadmore",
+                    "style": {
+                        "navigationBarTitleText": "Loadmore 加载更多"
+                    }
+                },
+                {
+                    "path": "view/noticebar",
+                    "style": {
+                        "navigationBarTitleText": "Noticebar 通知栏"
+                    }
+                },
+                {
+                    "path": "view/countdown",
+                    "style": {
+                        "navigationBarTitleText": "Countdown 倒计时"
+                    }
+                },
+                {
+                    "path": "view/popup",
+                    "style": {
+                        "navigationBarTitleText": "Popup 弹出框"
+                    }
+                },
+                {
+                    "path": "view/progress",
+                    "style": {
+                        "navigationBarTitleText": "Progress 进度条"
+                    }
+                },
+                {
+                    "path": "view/search",
+                    "style": {
+                        "navigationBarTitleText": "Search 搜索框"
+                    }
+                },
+                {
+                    "path": "view/slider",
+                    "style": {
+                        "navigationBarTitleText": "Slider 滑块"
+                    }
+                },
+                {
+                    "path": "view/tabs",
+                    "style": {
+                        "navigationBarTitleText": "Tabs 选项卡"
+                    }
+                },
+                {
+                    "path": "view/timeline",
+                    "style": {
+                        "navigationBarTitleText": "Timeline 时间线"
+                    }
+                },
+                {
+                    "path": "view/topbar"
+                },
+                {
+                    "path": "view/waterfall",
+                    "style": {
+                        "navigationBarTitleText": "Waterfall 瀑布流",
+                        "enablePullDownRefresh": true
+                    }
+                },
+                {
+                    "path": "view/banner",
+                    "style": {
+                        "navigationBarTitleText": "Banner 轮博图"
+                    }
+                },
+                {
+                    "path": "view/card",
+                    "style": {
+                        "navigationBarTitleText": "Card 卡片"
+                    }
+                },
+                {
+                    "path": "view/list",
+                    "style": {
+                        "navigationBarTitleText": "List 列表"
+                    }
+                },
+                {
+                    "path": "view/list-index",
+                    "style": {
+                        "navigationBarTitleText": "ListIndex 索引列表"
+                    }
+                },
+                {
+                    "path": "view/scroller",
+                    "style": {
+                        "navigationBarTitleText": "Scroller 滚动条"
+                    }
+                },
+                {
+                    "path": "view/skeleton",
+                    "style": {
+                        "navigationBarTitleText": "Skeleton 骨架图"
+                    }
+                },
+                {
+                    "path": "form/input",
+                    "style": {
+                        "navigationBarTitleText": "Input 输入框"
+                    }
+                },
+                {
+                    "path": "form/input-number",
+                    "style": {
+                        "navigationBarTitleText": "InputNumber 计数器"
+                    }
+                },
+                {
+                    "path": "form/textarea",
+                    "style": {
+                        "navigationBarTitleText": "Textarea 文本域"
+                    }
+                },
+                {
+                    "path": "form/checkbox",
+                    "style": {
+                        "navigationBarTitleText": "Checkbox 多选框"
+                    }
+                },
+                {
+                    "path": "form/radio",
+                    "style": {
+                        "navigationBarTitleText": "Radio 单选框"
+                    }
+                },
+                {
+                    "path": "form/form",
+                    "style": {
+                        "navigationBarTitleText": "Form 表单"
+                    }
+                },
+                {
+                    "path": "form/select",
+                    "style": {
+                        "navigationBarTitleText": "Select 下拉框"
+                    }
+                },
+                {
+                    "path": "form/select-popup",
+                    "style": {
+                        "navigationBarTitleText": "SelectPopup 下拉框弹窗"
+                    }
+                },
+                {
+                    "path": "form/select-date",
+                    "style": {
+                        "navigationBarTitleText": "SelectDate 时间选择器"
+                    }
+                },
+                {
+                    "path": "form/select-city",
+                    "style": {
+                        "navigationBarTitleText": "SelectCity 城市选择器"
+                    }
+                },
+                {
+                    "path": "form/rate",
+                    "style": {
+                        "navigationBarTitleText": "Rate 评分"
+                    }
+                },
+                {
+                    "path": "form/switch",
+                    "style": {
+                        "navigationBarTitleText": "Switch 开关"
+                    }
+                },
+                {
+                    "path": "form/upload",
+                    "style": {
+                        "navigationBarTitleText": "Upload 文件上传"
+                    }
+                },
+                {
+                    "path": "extend/action-sheet",
+                    "style": {
+                        "navigationBarTitleText": "ActionSheet 操作菜单"
+                    }
+                },
+                {
+                    "path": "extend/captcha",
+                    "style": {
+                        "navigationBarTitleText": "Captcha 验证码"
+                    }
+                },
+                {
+                    "path": "extend/confirm",
+                    "style": {
+                        "navigationBarTitleText": "Confirm 确认框"
+                    }
+                },
+                {
+                    "path": "extend/dialog",
+                    "style": {
+                        "navigationBarTitleText": "Dialog 对话框"
+                    }
+                },
+                {
+                    "path": "extend/filter-bar",
+                    "style": {
+                        "navigationBarTitleText": "FilterBar 过滤栏"
+                    }
+                },
+                {
+                    "path": "extend/page",
+                    "style": {
+                        "navigationBarTitleText": "Page 页面"
+                    }
+                },
+                {
+                    "path": "extend/tree",
+                    "style": {
+                        "navigationBarTitleText": "Tree 树形"
+                    }
+                },
+                {
+                    "path": "extend/service",
+                    "style": {
+                        "navigationBarTitleText": "Service 服务"
+                    }
+                },
+                {
+                    "path": "extend/slider-verify",
+                    "style": {
+                        "navigationBarTitleText": "SliderVerify 图片滑动验证"
+                    }
+                }
+            ]
+        }
+    ],
+    "globalStyle": {
+        "navigationBarTextStyle": "black",
+        "navigationBarTitleText": "cool-uni",
+        "navigationBarBackgroundColor": "#ffffff",
+        "backgroundColor": "#f6f7fa"
+    },
+    "tabBar": {
+        "backgroundColor": "#ffffff",
+        "borderStyle": "white",
+        "height": 0,
+        "list": [
+            {
+                "pagePath": "pages/home/index",
+                "iconPath": "static/icon/tabbar/home.png",
+                "selectedIconPath": "static/icon/tabbar/home2.png",
+                "text": "%首页%",
+                "visible": false
+            },
+            {
+                "pagePath": "pages/monitoringData/index",
+                "iconPath": "static/icon/tabbar/admin.png",
+                "selectedIconPath": "static/icon/tabbar/admin2.png",
+                "text": "%监测数据%",
+                "visible": false
+            },
+            {
+                "pagePath": "pages/constructionRecord/index",
+                "iconPath": "static/icon/tabbar/my.png",
+                "selectedIconPath": "static/icon/tabbar/my2.png",
+                "text": "%施工记录%",
+                "visible": false
+            }
+        ]
+    }
+}

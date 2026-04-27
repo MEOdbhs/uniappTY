@@ -1,0 +1,211 @@
+{
+    "name" : "矿山运维",
+    "appid" : "__UNI__187BE83",
+    "description" : "",
+    "versionName" : "1.0.7",
+    "versionCode" : 107,
+    "transformPx" : false,
+    "app-plus" : {
+        "usingComponents" : true,
+        "splashscreen" : {
+            "alwaysShowBeforeRender" : true,
+            "waiting" : true,
+            "autoclose" : true,
+            "delay" : 0
+        },
+        "modules" : {
+            "VideoPlayer" : {},
+            "Share" : {},
+            "Payment" : {},
+            "OAuth" : {},
+            "Geolocation" : {},
+            "Camera" : {},
+            "Maps" : {}
+        },
+        "distribute" : {
+            "android" : {
+                "permissions" : [
+                    "<uses-feature android:name=\"android.hardware.camera\"/>",
+                    "<uses-feature android:name=\"android.hardware.camera.autofocus\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.CAMERA\"/>",
+                    "<uses-permission android:name=\"android.permission.CAPTURE_VIDEO_OUTPUT\"/>",
+                    "<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>",
+                    "<uses-permission android:name=\"android.permission.INTERNET\"/>",
+                    "<uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\"/>",
+                    "<uses-permission android:name=\"android.permission.MOUNT_UNMOUNT_FILESYSTEMS\"/>",
+                    "<uses-permission android:name=\"android.permission.READ_LOGS\"/>",
+                    "<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.RECORD_AUDIO\"/>",
+                    "<uses-permission android:name=\"android.permission.STATUS_BAR\"/>",
+                    "<uses-permission android:name=\"android.permission.VIBRATE\"/>",
+                    "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
+                    "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>",
+                    "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
+                ],
+                "abiFilters" : [ "armeabi-v7a", "arm64-v8a" ],
+                "privacy" : {
+                    "prompt" : "none",
+                    "template" : {}
+                }
+            },
+            "ios" : {
+                "capabilities" : {
+                    "entitlements" : {
+                        "com.apple.developer.associated-domains" : []
+                    }
+                },
+                "idfa" : false,
+                "privacyDescription" : {
+                    "NSUserTrackingUsageDescription" : "请放心，开启权限不会获取您在其他站点的隐私信息，该权限仅用于标识设备并保障服务安全与提示浏览体验"
+                },
+                "dSYMs" : false
+            },
+            "sdkConfigs" : {
+                "payment" : {
+                    "alipay" : {
+                        "__platform__" : [ "ios", "android" ]
+                    },
+                    "weixin" : {
+                        "__platform__" : [ "ios", "android" ],
+                        "appid" : "wx348f72db1512fa2e",
+                        "UniversalLinks" : ""
+                    }
+                },
+                "ad" : {},
+                "share" : {
+                    "weixin" : {
+                        "appid" : "wx348f72db1512fa2e",
+                        "UniversalLinks" : ""
+                    }
+                },
+                "oauth" : {
+                    "weixin" : {
+                        "appid" : "wx348f72db1512fa2e",
+                        "appsecret" : "test",
+                        "UniversalLinks" : ""
+                    },
+                    "apple" : {}
+                },
+                "geolocation" : {
+                    "system" : {
+                        "__platform__" : [ "ios", "android" ]
+                    },
+                    "amap" : {
+                        "name" : "1585570319@qq.com",
+                        "__platform__" : [ "ios", "android" ],
+                        "appkey_ios" : "7fe92430f05b53756094f52319362291",
+                        "appkey_android" : "7fe92430f05b53756094f52319362291"
+                    }
+                },
+                "push" : {
+                    "unipush" : {
+                        "offline" : false,
+                        "icons" : {
+                            "small" : {
+                                "ldpi" : ""
+                            }
+                        }
+                    }
+                },
+                "maps" : {
+                    "amap" : {
+                        "name" : "1585570319@qq.com",
+                        "appkey_ios" : "7fe92430f05b53756094f52319362291",
+                        "appkey_android" : "7fe92430f05b53756094f52319362291"
+                    }
+                }
+            },
+            "icons" : {
+                "android" : {
+                    "hdpi" : "static/appLogo.png",
+                    "xhdpi" : "static/appLogo.png",
+                    "xxhdpi" : "static/appLogo.png",
+                    "xxxhdpi" : "static/appLogo.png"
+                },
+                "ios" : {
+                    "appstore" : "",
+                    "ipad" : {
+                        "app" : "",
+                        "app@2x" : "",
+                        "notification" : "",
+                        "notification@2x" : "",
+                        "proapp@2x" : "",
+                        "settings" : "",
+                        "settings@2x" : "",
+                        "spotlight" : "",
+                        "spotlight@2x" : ""
+                    },
+                    "iphone" : {
+                        "app@2x" : "",
+                        "app@3x" : "",
+                        "notification@2x" : "",
+                        "notification@3x" : "",
+                        "settings@2x" : "",
+                        "settings@3x" : "",
+                        "spotlight@2x" : "",
+                        "spotlight@3x" : ""
+                    }
+                }
+            },
+            "splashscreen" : {
+                "useOriginalMsgbox" : true
+            }
+        },
+        "safearea" : {
+            "bottom" : {
+                "offset" : "none"
+            }
+        },
+        "uniStatistics" : {
+            "enable" : true
+        }
+    },
+    "quickapp" : {},
+    "mp-weixin" : {
+        "appid" : "wxdebc4de0b5584ca4",
+        "setting" : {
+            "urlCheck" : true,
+            "es6" : false
+        },
+        "usingComponents" : true
+    },
+    "mp-alipay" : {
+        "usingComponents" : true
+    },
+    "mp-baidu" : {
+        "usingComponents" : true
+    },
+    "mp-toutiao" : {
+        "usingComponents" : true
+    },
+    "uniStatistics" : {
+        "enable" : false
+    },
+    "vueVersion" : "3",
+    "h5" : {
+        "router" : {
+            "base" : "./",
+            "mode" : "hash"
+        },
+        "devServer" : {
+            "https" : false
+        }
+    },
+    "locale" : "zh-Hans",
+    "app-harmony" : {
+        "distribute" : {
+            "modules" : {
+                "uni-map" : {
+                    "tencent" : {
+                        "key" : "MKUBZ-OBR3Q-MGQ5F-BCPM2-VVIHV-4QFHX"
+                    }
+                }
+            }
+        }
+    }
+}

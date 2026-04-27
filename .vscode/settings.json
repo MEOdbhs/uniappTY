@@ -1,0 +1,10 @@
+{
+	"editor.cursorSmoothCaretAnimation": "on",
+	"editor.formatOnSave": true,
+	"i18n-ally.localesPaths": [
+		"locale",
+		"uni_modules/uni-table/i18n",
+		"uni_modules/uni-calendar/components/uni-calendar/i18n",
+		"uni_modules/uni-datetime-picker/components/uni-datetime-picker/i18n"
+	],
+}

@@ -1,0 +1,5 @@
+/* 非 scoped 引入：小程序 input 的 placeholder-class 需全局样式生效 */
+.auth-input-ph {
+	font-size: 28rpx !important;
+	line-height: 52rpx !important;
+}
