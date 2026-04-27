@@ -29,21 +29,36 @@ export const chooseFileFromModule : ChooseFile = function (options : ChooseFileO
 	  if(uris.length > 0) {
 		  uri = uris[0]
 		  // 解码中文路径
-		  filePath = decodeURIComponent(uri);
-		  console.info('filePath are:' + filePath);
+		  let decodedUri = decodeURIComponent(uri);
+		  console.info('decodedUri are:' + decodedUri);
 		  
 		  // 获取描述符 这里需要注意接口权限参数是fs.OpenMode.READ_ONLY。
-		  let file = fs.openSync(uri, fs.OpenMode.READ_ONLY);		  
-		  // 获取文件大小 更完整的读取示例（循环读取直到文件结束）		  
+		  let srcFile = fs.openSync(uri, fs.OpenMode.READ_ONLY);
+		  
+		  // 提取文件名
+		  let originalName = decodedUri.substring(decodedUri.lastIndexOf('/') + 1);
+		  if (originalName.length == 0) {
+			originalName = "temp.tmp";
+		  }
+		  let fileName = Date.now().toString() + "_" + originalName;
+		  
+		  let cacheDir = context.cacheDir;
+		  let targetPath = cacheDir + "/" + fileName;
+		  let destFile = fs.openSync(targetPath, fs.OpenMode.READ_WRITE | fs.OpenMode.CREATE);
+		  
 		  let buffer = new ArrayBuffer(BUFFER_SIZE);		  
 		  while (true) {
-		    let readLen = fs.readSync(file.fd, buffer);
+		    let readLen = fs.readSync(srcFile.fd, buffer);
 		    if (readLen <= 0) break; // 读取结束
+		    fs.writeSync(destFile.fd, buffer, { length: readLen });
 		    totalSize += readLen;
-		    // 处理buffer中的数据...
 		  }
 		  
-		  fs.closeSync(file);
+		  fs.closeSync(srcFile);
+		  fs.closeSync(destFile);
+		  
+		  filePath = "file://" + targetPath;
+		  
 		  console.log(`文件总大小: ${totalSize}字节`);
 	  }
 	  console.info('documentViewPicker.select to file succeed and uris are:' + uris);	  
@@ -51,7 +66,7 @@ export const chooseFileFromModule : ChooseFile = function (options : ChooseFileO
 	  const res : ChooseFileResult = {
 	    size: totalSize,
 	    path: filePath,
-		name: ''
+		name: uris.length > 0 ? (decodeURIComponent(uris[0]).substring(decodeURIComponent(uris[0]).lastIndexOf('/') + 1) || 'temp.tmp') : ''
 	  };
 	  options.success?.(res);
 	  options.complete?.(res);  

@@ -1,4 +1,4 @@
-package uts.sdk.modules.srFilePicker
+package uts.sdk.modules.srFileChoose
 
 import android.content.Intent
 import android.net.Uri
@@ -11,14 +11,54 @@ object NativeCode {
     private const val REQUEST_CODE_PICK_FILE = 1001
 
     // 定义一个回调接口，用于返回文件路径
-    private var filePickerCallback: ((String?) -> Unit)? = null
+    private var filePickerCallback: ((String?, Number, String) -> Unit)? = null
+    private var isRegistered = false
 
     /**
      * 打开文件选择器
      * @param callback 回调函数，用于返回选中的文件路径
      */
-    fun openFilePicker(callback: (String?) -> Unit) {
+    fun openFilePicker(callback: (String?, Number, String) -> Unit) {
 		console.log("open filepicker")
+        if (!isRegistered) {
+            UTSAndroid.onAppActivityResult { requestCode, resultCode, data ->
+                if (requestCode == REQUEST_CODE_PICK_FILE) {
+                    if (resultCode == android.app.Activity.RESULT_OK) {
+                        val uri: Uri? = data?.data
+                        if (uri != null) {
+                            val context = UTSAndroid.getUniActivity()
+                            if (context != null) {
+                                var size: Long = 0
+                                var name: String = "unknown"
+                                context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+                                    if (cursor.moveToFirst()) {
+                                        val sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE)
+                                        if (sizeIndex != -1) {
+                                            size = cursor.getLong(sizeIndex)
+                                        }
+                                        val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                                        if (nameIndex != -1) {
+                                            name = cursor.getString(nameIndex) ?: "unknown"
+                                        }
+                                    }
+                                }
+                                val filePath = getFilePathFromUri(context, uri, name)
+                                filePickerCallback?.invoke(filePath, size, name)
+                            } else {
+                                filePickerCallback?.invoke(null, 0, "")
+                            }
+                        } else {
+                            filePickerCallback?.invoke(null, 0, "")
+                        }
+                    } else {
+                        filePickerCallback?.invoke(null, 0, "")
+                    }
+                    filePickerCallback = null
+                }
+            }
+            isRegistered = true
+        }
+
         // 保存回调函数
         filePickerCallback = callback
 
@@ -31,51 +71,5 @@ object NativeCode {
         // 启动文件选择器
         val activity = UTSAndroid.getUniActivity()
         activity?.startActivityForResult(intent, REQUEST_CODE_PICK_FILE)
-    }
-
-    /**
-     * 处理文件选择结果
-     */
-	
-    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-		console.log("Selected file")
-        if (requestCode == REQUEST_CODE_PICK_FILE && resultCode == android.app.Activity.RESULT_OK) {
-            val uri: Uri? = data?.data
-            if (uri != null) {
-                // 获取文件路径
-                val filePath = getFilePathFromUri(uri)
-                console.log("Selected file path: ", filePath)
-
-                // 通过回调返回文件路径
-                filePickerCallback?.invoke(filePath)
-            } else {
-                // 如果没有选中文件，返回 null
-                filePickerCallback?.invoke(null)
-            }
-        } else {
-            // 用户取消选择或选择失败，返回 null
-            filePickerCallback?.invoke(null)
-        }
-
-        // 清空回调，避免内存泄漏
-        filePickerCallback = null
-    }
-
-    /**
-     * 从 Uri 中获取文件路径
-     */
-    private fun getFilePathFromUri(uri: Uri): String? {
-        val context = UTSAndroid.getUniActivity()
-        val cursor = context?.contentResolver?.query(uri, null, null, null, null)
-        return cursor?.use {
-            if (it.moveToFirst()) {
-                // 获取文件名
-                val displayName = it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-                // 获取文件路径（实际路径可能无法直接获取，返回 Uri 的字符串形式）
-                uri.toString()
-            } else {
-                null
-            }
-        }
     }
 }

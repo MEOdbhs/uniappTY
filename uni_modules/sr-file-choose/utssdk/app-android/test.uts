@@ -1,0 +1,7 @@
+import { UTSAndroid } from 'io.dcloud.uts';
+import Intent from 'android.content.Intent';
+
+export function test() {
+    UTSAndroid.onAppActivityResult((requestCode: Int, resultCode: Int, data: Intent | null) => {
+    });
+}
