@@ -14,6 +14,11 @@ object NativeCode {
     private var filePickerCallback: ((String?, Number, String) -> Unit)? = null
     private var isRegistered = false
 
+    private fun getMimeType(url: String): String {
+        val extension = url.substringAfterLast('.', "")
+        return android.webkit.MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension.toLowerCase()) ?: "*/*"
+    }
+
     /**
      * 打开文件选择器
      * @param callback 回调函数，用于返回选中的文件路径
@@ -64,7 +69,8 @@ object NativeCode {
 
         // 创建文件选择 Intent
         val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
-            type = "*/*" // 选择所有类型的文件
+            type = "application/vnd.ms-excel" // .xls
+            putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) // .xls, .xlsx
             addCategory(Intent.CATEGORY_OPENABLE)
         }
 

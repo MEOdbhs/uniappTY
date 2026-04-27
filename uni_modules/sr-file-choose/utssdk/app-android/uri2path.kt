@@ -3,6 +3,7 @@ package uts.sdk.modules.srFileChoose
 import android.net.Uri
 import java.io.File
 import android.content.Context
+import java.io.FileOutputStream
 
 fun getFilePathFromUri(
     context: Context,
@@ -13,8 +14,13 @@ fun getFilePathFromUri(
     val targetFile = File(context.cacheDir, safeFileName)
     return try {
         context.contentResolver.openInputStream(uri)?.use { input ->
-            targetFile.outputStream().use { output ->
-                input.copyTo(output)
+            FileOutputStream(targetFile).use { output ->
+                val buffer = ByteArray(4 * 1024) // 4KB buffer
+                var read: Int
+                while (input.read(buffer).also { read = it } != -1) {
+                    output.write(buffer, 0, read)
+                }
+                output.flush()
             }
         } ?: return null
         "file://" + targetFile.absolutePath

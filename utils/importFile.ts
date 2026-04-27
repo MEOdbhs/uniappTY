@@ -122,6 +122,15 @@ export function importManualMonitorDataByUpload(
 	}
 
 	return new Promise((resolve, reject) => {
+		console.log("[importManualMonitorDataByUpload] start upload:");
+		console.log("url:", getImportMonitorDataFullUrl());
+		console.log("filePath:", safeFilePath);
+		console.log("formData:", {
+			deviceCode: safeDeviceCode,
+			siteCode: safeSiteCode,
+			fileName: safeFileName,
+		});
+
 		uni.uploadFile({
 			url: getImportMonitorDataFullUrl(),
 			filePath: safeFilePath,
@@ -145,8 +154,10 @@ export function importManualMonitorDataByUpload(
 				fileName: safeFileName,
 			},
 			success: (res) => {
+				console.log("[importManualMonitorDataByUpload] upload success raw res:", res);
 				try {
 					const data = parseUploadResponseText(res.data);
+					console.log("[importManualMonitorDataByUpload] parsed data:", data);
 					const isSuccess = data?.success === true || data?.status === 200;
 					if (!isSuccess) {
 						reject(new Error(data?.message || "导入失败"));
@@ -158,6 +169,7 @@ export function importManualMonitorDataByUpload(
 				}
 			},
 			fail: (err) => {
+				console.log("[importManualMonitorDataByUpload] upload fail:", err);
 				reject(new Error(err?.errMsg || "导入失败：网络异常"));
 			},
 		});
