@@ -16,7 +16,7 @@ object NativeCode {
 
     private fun getMimeType(url: String): String {
         val extension = url.substringAfterLast('.', "")
-        return android.webkit.MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension.toLowerCase()) ?: "*/*"
+        return android.webkit.MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension.lowercase()) ?: "*/*"
     }
 
     /**
