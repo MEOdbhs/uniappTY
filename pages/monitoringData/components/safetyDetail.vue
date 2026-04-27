@@ -129,6 +129,7 @@ const detailBase = ref({
 	unit: "",
 	statusText: "正常",
 	monitorDt: "-",
+	siteCode: "",
 });
 
 /**
@@ -287,6 +288,7 @@ onLoad((options) => {
 		unit: decode(options?.unit),
 		statusText: decode(options?.statusText) || "正常",
 		monitorDt: decode(options?.monitorDt) || "-",
+		siteCode: decode(options?.siteCode) || "",
 	};
 });
 
@@ -405,6 +407,12 @@ function goBack() {
 function goManualImport() {
 	router.push({
 		path: "/pages/monitoringData/components/manualImport",
+		query: {
+			siteCode: detailBase.value.siteCode,
+			deviceId: detailBase.value.id,
+			deviceCode: encodeURIComponent(detailBase.value.deviceCode),
+			deviceName: encodeURIComponent(detailBase.value.deviceName)
+		}
 	});
 }
 </script>

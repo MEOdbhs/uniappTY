@@ -243,6 +243,7 @@ function openDetail(item: SafetySensorViewItem) {
 			unit: encodeURIComponent(item.unit),
 			statusText: encodeURIComponent(item.statusText),
 			monitorDt: encodeURIComponent(item.monitorDt),
+			siteCode: encodeURIComponent(item.siteCode || ""),
 		},
 	});
 }

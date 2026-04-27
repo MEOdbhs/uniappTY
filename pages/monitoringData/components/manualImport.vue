@@ -148,8 +148,23 @@ const filteredDeviceList = computed(() => {
 	});
 });
 
-onLoad(() => {
-	loadMineList();
+onLoad((options) => {
+	loadMineList().then(() => {
+		if (options?.siteCode) {
+			const targetMine = mineList.value.find(item => getMineSiteCode(item) === options.siteCode);
+			if (targetMine) {
+				selectedMineSiteCode.value = getMineSiteCode(targetMine);
+				selectedMineName.value = getMineLabel(targetMine);
+				loadDeviceList();
+				loadHistoryList();
+			}
+		}
+		if (options?.deviceId) {
+			selectedDeviceId.value = decodeURIComponent(options.deviceId || "");
+			selectedDeviceCode.value = decodeURIComponent(options.deviceCode || "");
+			selectedDeviceName.value = decodeURIComponent(options.deviceName || "");
+		}
+	});
 });
 
 /**
@@ -384,11 +399,6 @@ async function submitImport() {
 			fileName: selectedFile.value.name,
 		});
 		uni.showToast({ title: "导入成功", icon: "success" });
-		selectedMineSiteCode.value = "";
-		selectedMineName.value = "";
-		selectedDeviceId.value = "";
-		selectedDeviceCode.value = "";
-		selectedDeviceName.value = "";
 		selectedFile.value = null;
 		loadHistoryList();
 	} catch (err: any) {
