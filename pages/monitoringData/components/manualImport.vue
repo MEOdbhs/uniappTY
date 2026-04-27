@@ -150,8 +150,14 @@ const filteredDeviceList = computed(() => {
 
 onLoad((options) => {
 	loadMineList().then(() => {
-		if (options?.siteCode) {
-			const targetMine = mineList.value.find(item => getMineSiteCode(item) === options.siteCode);
+		const rawSiteCode = options?.siteCode ? decodeURIComponent(String(options.siteCode)) : "";
+		const rawSiteName = options?.siteName ? decodeURIComponent(String(options.siteName)) : "";
+		if (rawSiteCode || rawSiteName) {
+			const targetMine = mineList.value.find((item) => {
+				if (rawSiteCode && getMineSiteCode(item) === rawSiteCode) return true;
+				if (!rawSiteName) return false;
+				return getMineLabel(item) === rawSiteName;
+			});
 			if (targetMine) {
 				selectedMineSiteCode.value = getMineSiteCode(targetMine);
 				selectedMineName.value = getMineLabel(targetMine);

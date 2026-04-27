@@ -1,7 +1,7 @@
 <template>
 	<cl-page>
 		<view class="detail-page">
-			<view class="detail-header">
+			<view class="detail-header" :style="{ paddingTop: `${statusBarHeight}px` }">
 				<view class="header-left" @tap="goBack">
 					<uni-icons type="left" size="22" color="#909399" />
 				</view>
@@ -94,7 +94,7 @@
 
 			<view class="footer">
 				<view class="config">阈值配置</view>
-				<view class="device">设备档案</view>
+				<view class="device" @tap="goDeviceArchive">设备档案</view>
 			</view>
 		</view>
 	</cl-page>
@@ -114,6 +114,7 @@ import {
 } from "../api";
 
 const { router } = useCool();
+const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0;
 
 /**
  * 详情页首屏信息：
@@ -409,10 +410,17 @@ function goManualImport() {
 		path: "/pages/monitoringData/components/manualImport",
 		query: {
 			siteCode: detailBase.value.siteCode,
+			siteName: encodeURIComponent(detailBase.value.siteName),
 			deviceId: detailBase.value.id,
 			deviceCode: encodeURIComponent(detailBase.value.deviceCode),
-			deviceName: encodeURIComponent(detailBase.value.deviceName)
-		}
+			deviceName: encodeURIComponent(detailBase.value.deviceName),
+		},
+	});
+}
+
+function goDeviceArchive() {
+	router.push({
+		path: "/pages/monitoringData/components/deviceArchiveList",
 	});
 }
 </script>
@@ -442,12 +450,7 @@ function goManualImport() {
 }
 
 .detail-page {
-	height: 100%;
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
+	height: 100vh;
 	display: flex;
 	flex-direction: column;
 	overflow: hidden;
@@ -462,12 +465,12 @@ function goManualImport() {
 }
 
 .detail-header {
-	height: 92rpx;
 	padding: 0 16rpx;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	border-bottom: 1rpx solid #eef0f6;
+	min-height: 92rpx;
 }
 
 .header-left {

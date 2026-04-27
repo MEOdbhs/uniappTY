@@ -57,6 +57,12 @@
             }
         },
         {
+            "path": "pages/monitoringData/components/deviceArchiveList",
+            "style": {
+                "navigationStyle": "custom"
+            }
+        },
+        {
             "path": "pages/TecLibrary/index",
             "style": {
                 "navigationStyle": "custom",
