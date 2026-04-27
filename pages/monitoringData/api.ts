@@ -421,6 +421,7 @@ export interface SafetyThresholdConfig {
 	yellow: string;
 	blue: string;
 	unit: string;
+	raw: any;
 }
 
 /**
@@ -686,6 +687,19 @@ export function getSafetyThresholdByDeviceType(deviceType: string | number = 1) 
 }
 
 /**
+ * 保存或更新设备阈值配置
+ * POST /companyApp/DeviceSafeCheck/alarmThresholdSave
+ */
+export function saveAlarmThreshold(data: any) {
+	return service.request({
+		url: "/companyApp/DeviceSafeCheck/alarmThresholdSave",
+		method: "POST",
+		data,
+		needProject: false,
+	});
+}
+
+/**
  * 统一阈值结构：
  * - 兼容接口返回空对象/空值；
  * - 所有阈值都转字符串，保证与页面文本渲染逻辑一致。
@@ -705,6 +719,7 @@ export function normalizeSafetyThreshold(response: any): SafetyThresholdConfig |
 		yellow: toText(raw.yellowAlarm),
 		blue: toText(raw.blueAlarm),
 		unit: String(raw.unit ?? ""),
+		raw,
 	};
 }
 
