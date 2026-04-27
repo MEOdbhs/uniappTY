@@ -637,7 +637,7 @@ function statusClass(statusName?: string) {
 function constructionClass(statusName?: string) {
 	const key = String(statusName || "").trim();
 	const map: Record<string, string> = {
-		正常施工: "cs-normal",
+		正常: "cs-normal",
 		加班施工: "cs-overtime",
 		下班: "cs-offwork",
 		停工: "cs-stopped",
