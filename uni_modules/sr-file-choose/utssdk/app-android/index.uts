@@ -20,12 +20,12 @@ export function chooseFileFromModule(options: ChooseFileOptions) {
                 path: path,
                 name: name
             };
-            if (options.success) options.success(resData);
-            if (options.complete) options.complete(resData);
+            if (options.success != null) options.success!(resData);
+            if (options.complete != null) options.complete!(resData);
         } else {
             const err = { errMsg: "cancel or get path failed" };
-            if (options.fail) options.fail(err);
-            if (options.complete) options.complete(err);
+            if (options.fail != null) options.fail!(err);
+            if (options.complete != null) options.complete!(err);
         }
     });
 }
