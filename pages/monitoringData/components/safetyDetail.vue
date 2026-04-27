@@ -9,85 +9,92 @@
 				<view class="header-right-btn" @tap="goManualImport">+人工数据导入</view>
 			</view>
 
-			<view class="device-card">
-				<view class="device-title-row">
-					<view class="device-left">
-						<view class="status-dot" :style="{ backgroundColor: statusDotColor }" />
-						<text class="device-name">{{ detailBase.deviceName }}</text>
+			<view class="page-body">
+				<view class="device-card">
+					<view class="device-title-row">
+						<view class="device-left">
+							<view class="status-dot" :style="{ backgroundColor: statusDotColor }" />
+							<text class="device-name">{{ detailBase.deviceName }}</text>
+						</view>
+						<view
+							class="device-status-tag"
+							:style="{ color: statusTagColor, backgroundColor: statusTagBgColor }"
+						>
+							{{ detailBase.statusText }}
+						</view>
 					</view>
-					<view
-						class="device-status-tag"
-						:style="{ color: statusTagColor, backgroundColor: statusTagBgColor }"
-					>
-						{{ detailBase.statusText }}
+
+					<view class="device-value-row">
+						<text class="device-value">{{ detailBase.monitorValueText }}</text>
+						<text class="device-unit">{{ detailBase.unit }}</text>
+					</view>
+
+					<view class="device-meta-row">
+						<text class="device-site">{{ detailBase.siteName }}</text>
+						<text class="device-time">{{ detailBase.monitorDt }}</text>
 					</view>
 				</view>
 
-				<view class="device-value-row">
-					<text class="device-value">{{ detailBase.monitorValueText }}</text>
-					<text class="device-unit">{{ detailBase.unit }}</text>
+				<view class="section-title">趋势曲线</view>
+				<view class="chart-card">
+					<view v-if="trendInitLoading && trendPoints.length === 0" class="loading-wrap">
+						<cl-loading theme="primary" />
+						<text class="loading-text">趋势数据加载中...</text>
+					</view>
+					<view v-else-if="trendPoints.length === 0" class="loading-wrap">
+						<text class="loading-text">暂无趋势数据</text>
+					</view>
+					<qiun-data-charts
+						v-else
+						type="line"
+						:opts="chartOpts"
+						:chartData="trendChartData"
+						:ontouch="true"
+						canvas2d
+						canvasId="safety-detail-chart"
+						class="trend-chart"
+					/>
 				</view>
 
-				<view class="device-meta-row">
-					<text class="device-site">{{ detailBase.siteName }}</text>
-					<text class="device-time">{{ detailBase.monitorDt }}</text>
-				</view>
-			</view>
-
-			<view class="section-title">趋势曲线</view>
-			<view class="chart-card">
-				<view v-if="trendInitLoading && trendPoints.length === 0" class="loading-wrap">
+				<view class="section-title">设备阈值</view>
+				<view v-if="thresholdLoading" class="loading-wrap threshold-loading">
 					<cl-loading theme="primary" />
-					<text class="loading-text">趋势数据加载中...</text>
+					<text class="loading-text">阈值数据加载中...</text>
 				</view>
-				<view v-else-if="trendPoints.length === 0" class="loading-wrap">
-					<text class="loading-text">暂无趋势数据</text>
+				<view v-else-if="!thresholdConfig" class="loading-wrap threshold-loading">
+					<text class="loading-text">暂无阈值配置</text>
 				</view>
-				<qiun-data-charts
-					v-else
-					type="line"
-					:opts="chartOpts"
-					:chartData="trendChartData"
-					:ontouch="true"
-					canvas2d
-					canvasId="safety-detail-chart"
-					class="trend-chart"
-				/>
+				<view v-else class="threshold-grid">
+					<view class="threshold-cell threshold-cell--red">
+						<text class="threshold-value"
+							>{{ thresholdConfig.red }}{{ thresholdConfig.unit }}</text
+						>
+						<text class="threshold-label">红色预警</text>
+					</view>
+					<view class="threshold-cell threshold-cell--orange">
+						<text class="threshold-value"
+							>{{ thresholdConfig.orange }}{{ thresholdConfig.unit }}</text
+						>
+						<text class="threshold-label">橙色预警</text>
+					</view>
+					<view class="threshold-cell threshold-cell--yellow">
+						<text class="threshold-value"
+							>{{ thresholdConfig.yellow }}{{ thresholdConfig.unit }}</text
+						>
+						<text class="threshold-label">黄色预警</text>
+					</view>
+					<view class="threshold-cell threshold-cell--blue">
+						<text class="threshold-value"
+							>{{ thresholdConfig.blue }}{{ thresholdConfig.unit }}</text
+						>
+						<text class="threshold-label">蓝色预警</text>
+					</view>
+				</view>
 			</view>
 
-			<view class="section-title">设备阈值</view>
-			<view v-if="thresholdLoading" class="loading-wrap threshold-loading">
-				<cl-loading theme="primary" />
-				<text class="loading-text">阈值数据加载中...</text>
-			</view>
-			<view v-else-if="!thresholdConfig" class="loading-wrap threshold-loading">
-				<text class="loading-text">暂无阈值配置</text>
-			</view>
-			<view v-else class="threshold-grid">
-				<view class="threshold-cell threshold-cell--red">
-					<text class="threshold-value"
-						>{{ thresholdConfig.red }}{{ thresholdConfig.unit }}</text
-					>
-					<text class="threshold-label">红色预警</text>
-				</view>
-				<view class="threshold-cell threshold-cell--orange">
-					<text class="threshold-value"
-						>{{ thresholdConfig.orange }}{{ thresholdConfig.unit }}</text
-					>
-					<text class="threshold-label">橙色预警</text>
-				</view>
-				<view class="threshold-cell threshold-cell--yellow">
-					<text class="threshold-value"
-						>{{ thresholdConfig.yellow }}{{ thresholdConfig.unit }}</text
-					>
-					<text class="threshold-label">黄色预警</text>
-				</view>
-				<view class="threshold-cell threshold-cell--blue">
-					<text class="threshold-value"
-						>{{ thresholdConfig.blue }}{{ thresholdConfig.unit }}</text
-					>
-					<text class="threshold-label">蓝色预警</text>
-				</view>
+			<view class="footer">
+				<view class="config">阈值配置</view>
+				<view class="device">设备档案</view>
 			</view>
 		</view>
 	</cl-page>
@@ -169,7 +176,6 @@ const chartOpts = computed(() => {
 
 	return {
 		color: ["#2f7bff"],
-		// 顶部和底部都留足空间，避免裁切与倾斜标签重叠。
 		padding: [20, 12, 24, 8],
 		enableScroll: false,
 		legend: {
@@ -180,7 +186,6 @@ const chartOpts = computed(() => {
 			gridColor: "#eef2fb",
 			fontColor: "#8d98a8",
 			fontSize: 11,
-			// 轻微倾斜显示，减少时间标签重叠。
 			rotateLabel: true,
 		},
 		yAxis: {
@@ -201,9 +206,6 @@ const chartOpts = computed(() => {
 				type: "curve",
 				width: 2,
 				activeType: "hollow",
-				/**
-				 * 关闭更新动画，避免轮询每次都出现“重新加载”的视觉跳变。
-				 */
 				animation: false,
 			},
 		},
@@ -267,11 +269,6 @@ const statusTagColor = computed(() => statusStyle.value.tagColor);
 const statusTagBgColor = computed(() => statusStyle.value.tagBgColor);
 
 onLoad((options) => {
-	/**
-	 * 路由参数解码：
-	 * - 列表页会对中文字段做 encodeURIComponent；
-	 * - 统一在这里解码，保证详情页展示文本正确。
-	 */
 	const decode = (value: any) => {
 		if (value === undefined || value === null) return "";
 		try {
@@ -306,11 +303,6 @@ onUnload(() => {
 	stopTrendPolling();
 });
 
-/**
- * 计算“最近 60 秒”查询窗口：
- * - 按你要求，startTime 取当前时间前 60 秒；
- * - endTime 取当前时间，形成实时短窗口查询。
- */
 function getRecent60sRange() {
 	const end = new Date();
 	const start = new Date(end.getTime() - 60 * 60000);
@@ -320,11 +312,6 @@ function getRecent60sRange() {
 	};
 }
 
-/**
- * 日期格式化为 `YYYY-MM-DD HH:mm:ss`：
- * - 直接复用后端接口常见时间格式；
- * - 避免传 ISO 字符串引发时区解析差异。
- */
 function formatDateTime(date: Date) {
 	const pad = (num: number) => String(num).padStart(2, "0");
 	return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(
@@ -332,11 +319,6 @@ function formatDateTime(date: Date) {
 	)}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
 }
 
-/**
- * 加载趋势曲线：
- * - 先按设备编码查询最近 24h 原始数据；
- * - 再在前端裁剪为“当前前 10 秒 + 时间去重”，满足你提出的曲线规则。
- */
 async function loadTrendData() {
 	if (!detailBase.value.deviceCode) {
 		trendPoints.value = [];
@@ -360,11 +342,6 @@ async function loadTrendData() {
 		const nextPoints = normalizeSafetyTrendDataByOptions(trendRes, {
 			tailCount: TREND_TAIL_COUNT,
 		});
-		/**
-		 * 只有数据确实变化时才回写：
-		 * - 避免同一批点位重复赋值触发图表刷新；
-		 * - 减少轮询场景下的无效重绘。
-		 */
 		const hasChanged =
 			nextPoints.length !== trendPoints.value.length ||
 			nextPoints.some((item, index) => {
@@ -375,7 +352,6 @@ async function loadTrendData() {
 			trendPoints.value = nextPoints;
 		}
 	} catch {
-		// 轮询失败时保留上一帧曲线，避免图表反复闪烁或被清空。
 		if (trendPoints.value.length === 0) {
 			trendPoints.value = [];
 		}
@@ -386,11 +362,6 @@ async function loadTrendData() {
 	}
 }
 
-/**
- * 加载阈值配置：
- * - 阈值变化频率低，按首屏加载即可；
- * - 避免把阈值接口放进高频轮询，降低无效请求量。
- */
 async function loadThresholdData() {
 	thresholdLoading.value = true;
 	try {
@@ -404,11 +375,6 @@ async function loadThresholdData() {
 	}
 }
 
-/**
- * 详情首屏初始化：
- * - 趋势与阈值并发加载，缩短首屏等待；
- * - 后续趋势实时刷新由轮询接管。
- */
 async function loadDetailData() {
 	if (!detailBase.value.deviceCode) {
 		trendPoints.value = [];
@@ -418,11 +384,6 @@ async function loadDetailData() {
 	await Promise.all([loadTrendData(), loadThresholdData()]);
 }
 
-/**
- * 启动趋势轮询：
- * - 先立即拉一次，避免用户进入后等待下个轮询周期；
- * - 轮询周期固定 5 秒。
- */
 function startTrendPolling() {
 	stopTrendPolling();
 	if (!detailBase.value.deviceCode) return;
@@ -431,31 +392,16 @@ function startTrendPolling() {
 	}, TREND_POLL_INTERVAL_MS);
 }
 
-/**
- * 停止趋势轮询：
- * - 页面隐藏/卸载时停止，避免后台请求泄漏；
- * - 同时防止重复进入页面后叠加多个轮询实例。
- */
 function stopTrendPolling() {
 	if (!trendPollTimer.value) return;
 	clearInterval(trendPollTimer.value);
 	trendPollTimer.value = null;
 }
 
-/**
- * 返回上一页：
- * - 与系统路由行为一致；
- * - 不额外做状态持久化，保持返回逻辑简单稳定。
- */
 function goBack() {
 	router.back();
 }
 
-/**
- * 跳转人工导入页：
- * - 这是你确认要保留的右上角入口；
- * - 路由复用现有人工导入页面，避免重复实现表单逻辑。
- */
 function goManualImport() {
 	router.push({
 		path: "/pages/monitoringData/components/manualImport",
@@ -464,9 +410,41 @@ function goManualImport() {
 </script>
 
 <style scoped lang="scss">
-.detail-page {
-	min-height: 100vh;
+.footer {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 24rpx;
+	padding: 0 20rpx 20rpx;
 	background: #ffffff;
+	view {
+		line-height: 120rpx;
+		border-radius: 20rpx;
+		width: 49%;
+		color: #fff;
+		text-align: center;
+		font-size: 30rpx;
+	}
+	.config {
+		background-color: #547bff;
+	}
+	.device {
+		background-color: #2ba471;
+	}
+}
+
+.detail-page {
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	background: #ffffff;
+}
+
+.page-body {
+	flex: 1;
+	min-height: 0;
+	overflow-y: auto;
 	padding-bottom: 24rpx;
 }
 
